@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
   <data>
-    <!--Adding a m2m field to Purchase Orders in the Vendor Bill form view-->
+    <!--Adding a m2m field to Purchase Orders in the Vendor Bill form view & Allow to add any PO to Bill-->
     <record model="ir.ui.view" id="account_add_purchase">
       <field name="name">x_gfp.account.invoice.supplier.form.mod</field>
       <field name="model">account.invoice</field>
@@ -13,6 +13,9 @@
             <field name="origin_purchase"/>
           </page>
         </xpath>
+        <!--<xpath expr="//field[@name='purchase_id' and @class='oe_edit_only']" position="attributes">
+          <attribute name="domain">[('partner_id','=','partner_id')]</attribute>
+        </xpath>-->
       </field>
     </record>
     <!--Adding Menu Item to Accounting|Purchase for Purchase Orders-->

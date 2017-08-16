@@ -20,3 +20,23 @@ class AccountInvoice(models.Model):
                 polist = bill_origin.split(",")
                 purchase = self.env['purchase.order'].search([('name','in',polist)])
                 self.origin_purchase = purchase or False
+
+    @api.onchange('state', 'partner_id', 'invoice_line_ids')
+    def _onchange_allowed_purchase_ids(self):
+        '''
+        The purpose of the method is to define a domain for the available
+        purchase orders.
+        '''
+        result = {}
+
+        # A PO can be selected only if at least one PO line is not already in the invoice
+        purchase_line_ids = self.invoice_line_ids.mapped('purchase_line_id')
+        purchase_ids = self.invoice_line_ids.mapped('purchase_id').filtered(lambda r: r.order_line <= purchase_line_ids)
+
+        #modified the method to allow client to choose any PO for that specific vendor. 
+        result['domain'] = {'purchase_id': [
+            ('state', 'in', ['purchase','done']),
+            ('partner_id', 'child_of', self.partner_id.id),
+            ('id', 'not in', purchase_ids.ids),
+            ]}
+        return result
