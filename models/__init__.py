@@ -2,3 +2,4 @@
 
 import account_invoice
 import purchase
+import partner
