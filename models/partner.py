@@ -16,6 +16,5 @@ class ResPartner(models.Model):
     def open_partner_history(self):
         action = self.env.ref('account.action_invoice_refund_out_tree').read()[0]
         action['domain'] = literal_eval(action['domain'])
-        new_list = self.ids + self.commercial_partner_id.child_ids.ids
-        action['domain'].append(('partner_id','in',new_list))
+        action['domain'].append(('partner_id', 'child_of', self.ids))
         return action
