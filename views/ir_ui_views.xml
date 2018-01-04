@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+    <!--Adding memo to customer payment tree view-->
+    <record model="ir.ui.view" id="account_add_memo">
+      <field name="name">x_gfp.account.payment.tree.mod</field>
+      <field name="model">account.payment</field>
+      <field name="inherit_id" ref="account.view_account_payment_tree"/>
+      <field name="priority">99</field>
+      <field name="arch" type="xml">
+        <xpath expr="//field[@name='payment_method_id']" position="after">
+          <field name="communication"/>
+        </xpath>
+      </field>
+    </record>
+    <record model="ir.ui.view" id="view_account_payment_invoice_form_mod">
+      <field name="name">x_gfp.account.payment.invoice.form.mod</field>
+      <field name="model">account.payment</field>
+      <field name="inherit_id" ref="account.view_account_payment_invoice_form"/>
+      <field name="priority">99</field>
+      <field name="arch" type="xml">
+        <xpath expr="//field[@name='communication']" position="before">
+          <field name="check_number" readonly="0"/>
+        </xpath>
+      </field>
+    </record>
+    <!--Adding a m2m field to Purchase Orders in the Vendor Bill form view & Allow to add any PO to Bill-->
+    <record model="ir.ui.view" id="account_add_purchase">
+      <field name="name">x_gfp.account.invoice.supplier.form.mod</field>
+      <field name="model">account.invoice</field>
+      <field name="inherit_id" ref="account.invoice_supplier_form"/>
+      <field name="priority">99</field>
+      <field name="arch" type="xml">
+        <xpath expr="//notebook" position="inside">
+          <page string="Purchase Orders" attrs="{'invisible': [('origin_purchase', '=', False)]}">
+            <field name="origin_purchase"/>
+          </page>
+        </xpath>
+      </field>
+    </record>
+    <!--Adding Menu Item to Accounting|Purchase for Purchase Orders-->
+    <record model="ir.actions.act_window" id="account_action_purchase_link">
+      <field name="auto_search" eval="True"/>
+      <field name="context">{}</field>
+      <field name="domain">[('state','in',('purchase', 'done'))]</field>
+      <field name="filter" eval="False"/>
+      <field name="groups_id" eval="[(6, 0, [])]"/>
+      <field name="limit">80</field>
+      <field name="multi" eval="False"/>
+      <field name="name">Purchase Orders</field>
+      <field name="res_model">purchase.order</field>
+      <field name="search_view_id" ref="purchase.view_purchase_order_filter"/>
+      <field name="target">current</field>
+      <field name="type">ir.actions.act_window</field>
+      <field name="usage" eval="False"/>
+      <field name="view_ids" eval="[(6, 0, [])]"/>
+      <field name="view_mode">tree,form</field>
+      <field name="view_type">form</field>
+    </record>
+    <record model="ir.ui.menu" id="account_menu_purchase_link">
+      <field ref="sh_accounting_mod.account_action_purchase_link" name="action"/>
+      <field name="active" eval="True"/>
+      <field name="groups_id" eval="[(6, 0, [])]"/>
+      <field name="name">Purchase Orders</field>
+      <field ref="account.menu_finance_payables" name="parent_id"/>
+      <field name="sequence">120</field>
+      <field name="web_icon" eval="False"/>
+    </record>
+    <!--Adding Create Credit button on the res.partner form-->
+    <record model="ir.ui.view" id="view_partner_form_mod">
+      <field name="name">x_gfp.res.partner.form.mod</field>
+      <field name="model">res.partner</field>
+      <field name="inherit_id" ref="base.view_partner_form"/>
+      <field name="priority">99</field>
+      <field name="arch" type="xml">
+        <xpath expr="//sheet" position="before">
+          <header>
+            <button name="create_credit" type="object" string="Create Credit"/>
+          </header>
+        </xpath>
+      </field>
+    </record>
+    <record model="ir.actions.act_window" id="account_action_credit_memo">
+      <field name="auto_search" eval="True"/>
+      <field name="context">{}</field>
+      <field name="domain">[('invoice_type','in',('out_refund'))]</field>
+      <field name="filter" eval="False"/>
+      <field name="groups_id" eval="[(6, 0, [])]"/>
+      <field name="limit">80</field>
+      <field name="multi" eval="False"/>
+      <field name="name">Credit Memos</field>
+      <field name="res_model">account.invoice</field>
+      <field name="target">current</field>
+      <field name="type">ir.actions.act_window</field>
+      <field name="usage" eval="False"/>
+      <field name="view_id" ref="account.invoice_form"/>
+      <field name="view_mode">form</field>
+      <field name="view_type">form</field>
+    </record>
+    <record model="ir.ui.view" id="invoice_form_mod">
+      <field name="name">x_gfp.account.invoice.form.mod</field>
+      <field name="model">account.invoice</field>
+      <field name="inherit_id" ref="account.invoice_form"/>
+      <field name="priority">99</field>
+      <field name="arch" type="xml">
+        <xpath expr="//sheet//label[2]" position="attributes">
+          <attribute name="string">Credit Memo</attribute>
+        </xpath>
+        <xpath expr="//sheet//h1//label[2]" position="attributes">
+          <attribute name="string">Draft Credit Memo</attribute>
+        </xpath>
+        <xpath expr="//form//div" position="replace">
+          <div class="alert alert-info" role="alert" style="margin-bottom:0px;" attrs="{'invisible': ['|',('has_outstanding','=',False),('type','=','out_refund')]}">
+              You have <bold><a class="alert-link" href="#outstanding" role="button">outstanding payments</a></bold> for this customer. You can allocate them to mark this invoice as paid.
+          </div>
+          <div class="alert alert-info" role="alert" style="margin-bottom:0px;" attrs="{'invisible': ['|',('has_outstanding','=',False),('type','!=','out_refund')]}">
+              You have <bold><a class="alert-link" href="#outstanding" role="button">open invoices</a></bold> for this customer. You can allocate this credit memo to an open invoice.
+          </div>
+        </xpath>
+        <xpath expr="//button[@name='%(account.action_account_invoice_payment)d']" position="replace">
+          <button name="262" type="action" string="Register Payment" groups="account.group_account_invoice" class="oe_highlight" attrs="{'invisible': ['|',('state','not in',['open']),('type','=','out_refund')]}"/>
+        </xpath>
+        <xpath expr="//field[@name='residual']" position="attributes">
+          <attribute name="attrs">{'invisible': ['|',('state', '=', 'draft'),('type','=','out_refund')]}</attribute>
+        </xpath>
+      </field>
+    </record>
+  </data>
+</odoo>

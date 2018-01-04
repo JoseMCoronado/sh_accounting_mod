@@ -18,3 +18,15 @@ class ResPartner(models.Model):
         action['domain'] = literal_eval(action['domain'])
         action['domain'].append(('partner_id', 'child_of', self.ids))
         return action
+
+    def create_credit(self):
+        action = self.env.ref('sh_accounting_mod.account_action_credit_memo').read()[0]
+        salejournals = self.env['account.journal'].search([('type','=','sale')]).ids
+        action['context'] = {
+            'default_partner_id':self.id,
+            'default_invoice_type':'out_refund',
+            'default_type':'out_refund',
+            'default_payment_term_id':False,
+            'default_journal_id': salejournals[0],
+        }
+        return action
