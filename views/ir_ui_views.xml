@@ -72,6 +72,16 @@
             <field name="origin_purchase"/>
           </page>
         </xpath>
+        <xpath expr="//button[@name='%(account.action_account_invoice_refund)d']" position="attributes">
+          <attribute name="string">Create Credit</attribute>
+        </xpath>
+        <xpath expr="//button[@name='action_invoice_cancel']" position="attributes">
+          <attribute name="style">background-color:#1E90FF;color:white !important;</attribute>
+          <attribute name="string">Set to Draft</attribute>
+        </xpath>
+        <xpath expr="//header" position="inside">
+          <button name="499" type="action" string="Delete Invoice" class="btn-danger"/>
+        </xpath>
       </field>
     </record>
     <!--Adding Menu Item to Accounting|Purchase for Purchase Orders-->
@@ -114,6 +124,14 @@
             <button name="create_credit" type="object" string="Create Credit"/>
           </header>
         </xpath>
+        <xpath expr="//div[@name='button_box']" position="inside">
+          <button class="oe_stat_button" type="object" name="open_outstanding_credits" icon="fa-money" context="{'default_partner_id': active_id}">
+              <div class="o_stat_info">
+                  <span class="o_stat_value"><field name="credit_count"/></span>
+                  <span class="o_stat_text"> Credit(s) </span>
+              </div>
+          </button>
+        </xpath>
       </field>
     </record>
     <record model="ir.actions.act_window" id="account_action_credit_memo">
@@ -133,12 +151,93 @@
       <field name="view_mode">form</field>
       <field name="view_type">form</field>
     </record>
+    <record model="ir.ui.view" id="register_payment_amount_only_form">
+          <field name="name">x_gfp.register.payment.amount.only.form</field>
+          <field name="model">account.payment</field>
+          <field name="inherit_id" eval="False"/>
+          <field name="priority">16</field>
+          <field name="groups_id" eval="[(6, 0, [])]"/>
+          <field name="type">form</field>
+          <field name="mode">primary</field>
+          <field name="arch" type="xml">
+            <form string="Register Payment" version="7">
+                <sheet>
+                    <group>
+                        <field name="payment_type" invisible="1"/>
+                        <field name="partner_type" invisible="1"/>
+                        <field name="invoice_ids" invisible="1"/>
+                        <field name="partner_id" invisible="1"/>
+                        <field name="state" invisible="1"/>
+                        <group>
+                            <field name="journal_id" widget="selection" invisible="1"/>
+                            <field name="hide_payment_method" invisible="1"/>
+                            <field name="payment_method_id" widget="radio" invisible="1" attrs="{'invisible': [('hide_payment_method', '=', True)]}"/>
+                            <field name="payment_method_code" invisible="1"/>
+                            <label for="amount"/>
+                            <div name="amount_div" class="o_row">
+                                <field name="amount"/>
+                                <field name="currency_id" options="{'no_create': True, 'no_open': True}" groups="base.group_multi_currency"/>
+                            </div>
+                        </group>
+                        <group>
+                            <field name="payment_date"/>
+                            <field name="communication"/>
+                        </group>
+                        <group attrs="{'invisible': [('payment_difference', '=', 0.0)]}">
+                            <label for="payment_difference"/>
+                            <div>
+                                <field name="payment_difference"/>
+                                <field name="payment_difference_handling" widget="radio" nolabel="1"/>
+                            </div>
+                            <field name="writeoff_account_id" string="Post Difference In" attrs="{'invisible': [('payment_difference_handling','=','open')], 'required': [('payment_difference_handling', '=', 'reconcile')]}"/>
+                        </group>
+                    </group>
+                </sheet>
+                <footer>
+                    <button string="Validate" name="post" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-default" special="cancel"/>
+                </footer>
+            </form>
+          </field>
+    </record>
+    <record model="ir.actions.act_window" id="action_register_payment_amount_only">
+      <field name="auto_search" eval="True"/>
+      <field name="context">{'default_invoice_ids': [(4, active_id, None)],'default_journal_id':10,'default_payment_method_id':1}</field>
+      <field name="filter" eval="False"/>
+      <field name="groups_id" eval="[(6, 0, [])]"/>
+      <field name="limit">80</field>
+      <field name="multi" eval="False"/>
+      <field name="name">Register Payment</field>
+      <field name="res_model">account.payment</field>
+      <field name="search_view_id" eval="False"/>
+      <field name="target">new</field>
+      <field name="type">ir.actions.act_window</field>
+      <field name="usage" eval="False"/>
+      <field name="view_id" ref="sh_accounting_mod.register_payment_amount_only_form"/>
+      <field name="view_mode">form</field>
+      <field name="view_type">form</field>
+    </record>
     <record model="ir.ui.view" id="invoice_form_mod">
       <field name="name">x_gfp.account.invoice.form.mod</field>
       <field name="model">account.invoice</field>
       <field name="inherit_id" ref="account.invoice_form"/>
       <field name="priority">99</field>
       <field name="arch" type="xml">
+        <xpath expr="//field[@name='partner_shipping_id']" position="attributes">
+          <attribute name="attrs">{'invisible':[('type','=','out_refund')]}</attribute>
+        </xpath>
+        <xpath expr="//field[@name='payment_term_id']" position="attributes">
+          <attribute name="attrs">{'invisible':[('type','=','out_refund')]}</attribute>
+        </xpath>
+        <xpath expr="//field[@name='date_due']" position="attributes">
+          <attribute name="attrs">{'invisible':[('type','=','out_refund')]}</attribute>
+        </xpath>
+        <xpath expr="//notebook/page" position="attributes">
+          <attribute name="string">Lines</attribute>
+        </xpath>
+        <xpath expr="//field[@name='date_invoice']" position="attributes">
+          <attribute name="string">Date</attribute>
+        </xpath>
         <xpath expr="//sheet//label[2]" position="attributes">
           <attribute name="string">Credit Memo</attribute>
         </xpath>
@@ -153,13 +252,43 @@
               You have <bold><a class="alert-link" href="#outstanding" role="button">open invoices</a></bold> for this customer. You can allocate this credit memo to an open invoice.
           </div>
         </xpath>
+        <xpath expr="//button[@name='action_invoice_cancel']" position="attributes">
+          <attribute name="style">background-color:#1E90FF;color:white !important;</attribute>
+          <attribute name="string">Set to Draft</attribute>
+        </xpath>
+        <xpath expr="//header" position="inside">
+          <button name="499" type="action" string="Delete Invoice" class="btn-danger"/>
+        </xpath>
         <xpath expr="//button[@name='%(account.action_account_invoice_payment)d']" position="replace">
-          <button name="262" type="action" string="Register Payment" groups="account.group_account_invoice" class="oe_highlight" attrs="{'invisible': ['|',('state','not in',['open']),('type','=','out_refund')]}"/>
+          <button name="%(account.action_account_invoice_payment)d" type="action" groups="account.group_account_user" string="Register Payment" class="btn_success" attrs="{'invisible': ['|',('state','not in',['open']),('type','=','out_refund')]}"/>
+          <button name="%(sh_accounting_mod.action_register_payment_amount_only)d" type="action" string="Payment (Amount Only)" class="btn_success" attrs="{'invisible': ['|',('state','not in',['open']),('type','=','out_refund')]}"/>
+        </xpath>
+        <xpath expr="//button[@name='%(account.action_account_invoice_refund)d']" position="attributes">
+          <attribute name="string">Create Credit</attribute>
         </xpath>
         <xpath expr="//field[@name='residual']" position="attributes">
           <attribute name="attrs">{'invisible': ['|',('state', '=', 'draft'),('type','=','out_refund')]}</attribute>
         </xpath>
+
       </field>
+    </record>
+    <record model="ir.actions.act_window" id="action_outstanding_credits">
+      <field name="auto_search" eval="True"/>
+      <field name="context">{'default_type':'out_refund'}</field>
+      <field name="domain">[('state','in',('draft', 'open')),('type','=','out_refund')]</field>
+      <field name="filter" eval="False"/>
+      <field name="groups_id" eval="[(6, 0, [])]"/>
+      <field name="limit">80</field>
+      <field name="multi" eval="False"/>
+      <field name="name">Outstanding Credits</field>
+      <field name="res_model">account.invoice</field>
+      <field name="search_view_id" ref="account.view_account_invoice_filter"/>
+      <field name="target">current</field>
+      <field name="type">ir.actions.act_window</field>
+      <field name="usage" eval="False"/>
+      <field name="view_ids" eval="[(6, 0, [])]"/>
+      <field name="view_mode">tree,form</field>
+      <field name="view_type">form</field>
     </record>
   </data>
 </odoo>

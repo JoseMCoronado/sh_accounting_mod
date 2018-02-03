@@ -13,6 +13,6 @@ RESPONSIBILITY FOR ANY BEHAVIOR ONCE INSTALLED.
         """,
 
     'depends':['base','account_accountant','purchase'],
-    'data':['views/ir_ui_views.xml'],
+    'data':['views/ir_ui_views.xml','views/ir_ui_qweb.xml'],
     'installable': True,
 }

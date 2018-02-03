@@ -33,10 +33,26 @@ class AccountInvoice(models.Model):
         purchase_line_ids = self.invoice_line_ids.mapped('purchase_line_id')
         purchase_ids = self.invoice_line_ids.mapped('purchase_id').filtered(lambda r: r.order_line <= purchase_line_ids)
 
-        #modified the method to allow client to choose any PO for that specific vendor. 
+        #modified the method to allow client to choose any PO for that specific vendor.
         result['domain'] = {'purchase_id': [
             ('state', 'in', ['purchase','done']),
             ('partner_id', 'child_of', self.partner_id.id),
             ('id', 'not in', purchase_ids.ids),
             ]}
         return result
+
+    @api.multi
+    @api.onchange('partner_id')
+    def _add_credit_line(self):
+        for record in self:
+            if record.type in ['out_refund','in_refund']:
+                lines = record.invoice_line_ids
+                new_lines = record.env['account.invoice.line']
+                data = {
+                    'name': '*Credit*',
+                    'product_id': 9368,
+                    'product_qty': 1,
+                }
+                new_line = new_lines.new(data)
+                new_lines += new_line
+                record.invoice_line_ids += new_lines

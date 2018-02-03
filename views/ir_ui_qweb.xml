@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <!--Sale Order-->
+  <record model="ir.ui.view" id="report_saleorder_document_mod">
+      <field name="name">x_gfp.report_saleorder_document.mod</field>
+      <field name="type">qweb</field>
+      <field name="model" eval="False"/>
+      <field name="inherit_id" ref="sale.report_saleorder_document"/>
+      <field name="priority">99</field>
+      <field name="arch" type="xml">
+       <xpath expr="//p[@t-field='doc.note']" position="before">
+        <div class="row">
+          <span style="display:block;height:10px;"/>
+        </div>
+          <h4 t-if="doc.payment_ids">Payments</h4>
+          <table t-if="doc.payment_ids" class="table table-condensed">
+            <thead>
+                  <tr>
+                      <th>Payment Date</th>
+                      <th>Reference</th>
+                      <th>Payment Method</th>
+                      <th>Payment Amount</th>
+                  </tr>
+             </thead>
+             <tbody class="sale_tbody">
+               <tr t-foreach="doc.payment_ids" t-as="p">
+                 <td>
+                   <span t-field="p.name"/>
+                 </td>
+                 <td>
+                   <span t-field="p.payment_date"/>
+                 </td>
+                 <td>
+                   <span t-field="p.journal_id"/>
+                 </td>
+                 <td>
+                   <span t-field="p.amount"/>
+                 </td>
+               </tr>
+             </tbody>
+           </table>
+           <div t-if="doc.payment_ids" class="pull-right">
+               <strong>Balance Due: </strong><span t-field="doc.residual"/>
+           </div>
+           <div class="row">
+             <span style="display:block;height:10px;"/>
+           </div>
+       </xpath>
+      </field>
+    </record>
+</odoo>
