@@ -50,8 +50,9 @@ class AccountInvoice(models.Model):
                 new_lines = record.env['account.invoice.line']
                 data = {
                     'name': '*Credit*',
-                    'product_id': 9368,
-                    'product_qty': 1,
+                    'product_id': 10656,
+                    'quantity': 1,
+                    'account_id':17,
                 }
                 new_line = new_lines.new(data)
                 new_lines += new_line
