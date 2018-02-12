@@ -27,7 +27,7 @@ class ResPartner(models.Model):
         return action
 
     def create_credit(self):
-        if self.supplier = True:
+        if self.supplier == True:
             action = self.env.ref('sh_accounting_mod.account_action_credit_memo').read()[0]
             salejournals = self.env['account.journal'].search([('type','=','purchase')]).ids
             action['context'] = {
