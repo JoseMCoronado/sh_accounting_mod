@@ -48,9 +48,13 @@ class AccountInvoice(models.Model):
             if record.type in ['out_refund','in_refund']:
                 lines = record.invoice_line_ids
                 new_lines = record.env['account.invoice.line']
+                if record.type == 'in_refund':
+                    product = 11101
+                else:
+                    product = 10656
                 data = {
                     'name': '*Credit*',
-                    'product_id': 10656,
+                    'product_id': product,
                     'quantity': 1,
                     'account_id':17,
                 }
