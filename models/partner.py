@@ -27,15 +27,26 @@ class ResPartner(models.Model):
         return action
 
     def create_credit(self):
-        action = self.env.ref('sh_accounting_mod.account_action_credit_memo').read()[0]
-        salejournals = self.env['account.journal'].search([('type','=','sale')]).ids
-        action['context'] = {
-            'default_partner_id':self.id,
-            'default_invoice_type':'out_refund',
-            'default_type':'out_refund',
-            'default_payment_term_id':False,
-            'default_journal_id': salejournals[0],
-        }
+        if self.supplier = True:
+            action = self.env.ref('sh_accounting_mod.account_action_credit_memo').read()[0]
+            salejournals = self.env['account.journal'].search([('type','=','purchase')]).ids
+            action['context'] = {
+                'default_partner_id':self.id,
+                'default_invoice_type':'in_refund',
+                'default_type':'in_refund',
+                'default_payment_term_id':False,
+                'default_journal_id': salejournals[0],
+            }
+        else:
+            action = self.env.ref('sh_accounting_mod.account_action_credit_memo').read()[0]
+            salejournals = self.env['account.journal'].search([('type','=','sale')]).ids
+            action['context'] = {
+                'default_partner_id':self.id,
+                'default_invoice_type':'out_refund',
+                'default_type':'out_refund',
+                'default_payment_term_id':False,
+                'default_journal_id': salejournals[0],
+            }
         return action
 
     @api.multi
