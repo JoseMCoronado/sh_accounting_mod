@@ -50,13 +50,15 @@ class AccountInvoice(models.Model):
                 new_lines = record.env['account.invoice.line']
                 if record.type == 'in_refund':
                     product = 11101
+                    account = 19
                 else:
                     product = 10656
+                    account = 17
                 data = {
                     'name': '*Credit*',
                     'product_id': product,
                     'quantity': 1,
-                    'account_id':17,
+                    'account_id':account,
                 }
                 new_line = new_lines.new(data)
                 new_lines += new_line
