@@ -82,6 +82,10 @@
         <xpath expr="//header" position="inside">
           <button name="499" type="action" string="Delete Invoice" class="btn-danger"/>
         </xpath>
+        <xpath expr="//button[@name='%(account.action_account_invoice_payment)d']" position="replace">
+          <button name="%(account.action_account_invoice_payment)d" type="action" groups="account.group_account_user" string="Register Vendor Payment Check" class="btn_success" context="{'default_journal_id':8}" attrs="{'invisible': ['|',('state','not in',['open']),('type','=','in_refund')]}"/>
+          <button name="%(account.action_account_invoice_payment)d" type="action" string="Register Vendor Payment Credit Card" class="btn_success" context="{'default_journal_id':9}" attrs="{'invisible': ['|',('state','not in',['open']),('type','=','in_refund')]}"/>
+        </xpath>
       </field>
     </record>
     <!--Adding Menu Item to Accounting|Purchase for Purchase Orders-->
@@ -260,7 +264,7 @@
           <button name="499" type="action" string="Delete Invoice" class="btn-danger"/>
         </xpath>
         <xpath expr="//button[@name='%(account.action_account_invoice_payment)d']" position="replace">
-          <button name="%(account.action_account_invoice_payment)d" type="action" groups="account.group_account_user" string="Register Payment" class="btn_success" attrs="{'invisible': ['|',('state','not in',['open']),('type','=','out_refund')]}"/>
+          <button name="%(account.action_account_invoice_payment)d" type="action" groups="account.group_account_user" string="Register Customer Payment" class="btn_success" context="{'default_journal_id':10}" attrs="{'invisible': ['|',('state','not in',['open']),('type','=','out_refund')]}"/>
           <button name="%(sh_accounting_mod.action_register_payment_amount_only)d" type="action" string="Payment (Amount Only)" class="btn_success" attrs="{'invisible': ['|',('state','not in',['open']),('type','=','out_refund')]}"/>
         </xpath>
         <xpath expr="//button[@name='%(account.action_account_invoice_refund)d']" position="attributes">
