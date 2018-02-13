@@ -36,6 +36,7 @@ class ResPartner(models.Model):
                 'default_type':'in_refund',
                 'default_payment_term_id':False,
                 'default_journal_id': salejournals[0],
+                'default_account_id': 19,
             }
         else:
             action = self.env.ref('sh_accounting_mod.account_action_credit_memo').read()[0]
