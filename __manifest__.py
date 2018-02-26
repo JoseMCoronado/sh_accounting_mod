@@ -12,7 +12,7 @@ THIS MODULE IS PROVIDED AS IS - INSTALLATION AT USERS' OWN RISK - AUTHOR OF MODU
 RESPONSIBILITY FOR ANY BEHAVIOR ONCE INSTALLED.
         """,
 
-    'depends':['base','account_accountant','purchase'],
+    'depends':['base','account_accountant','purchase','account_cancel'],
     'data':['views/ir_ui_views.xml','views/ir_ui_qweb.xml'],
     'installable': True,
 }

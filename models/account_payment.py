@@ -17,3 +17,9 @@ class account_payment(models.Model):
             for pay in self:
                 if pay.invoice_ids:
                     pay.invoice_due_date = pay.invoice_ids[0].date_due
+
+    @api.multi
+    def post(self):
+        super(account_payment, self).post()
+        if self.payment_type == 'outbound' and self.partner_type == 'supplier' and self.payment_method_id == self.env.ref('account.account_payment_method_manual_out'):
+            self.state = 'sent'
