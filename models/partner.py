@@ -17,7 +17,7 @@ class ResPartner(models.Model):
     @api.multi
     def _get_credit_count(self):
         for record in self:
-            credits = record.env['account.invoice'].search([('partner_id','=',record.id),('state','in',('draft', 'open')),('type','=','out_refund')])
+            credits = record.env['account.invoice'].search([('partner_id','=',record.id),('state','in',('draft', 'open')),('type','in',['out_refund','in_refund'])])
             record.credit_count = len(credits)
 
     def open_partner_history(self):
@@ -53,5 +53,5 @@ class ResPartner(models.Model):
     def open_outstanding_credits(self):
         for record in self:
             action_data = record.env.ref('sh_accounting_mod.action_outstanding_credits').read()[0]
-            action_data.update({'domain':[('partner_id','=',record.id),('state','in',('draft', 'open')),('type','=','out_refund')],'context':{'default_type':'out_refund','default_partner_id':record.id}})
+            action_data.update({'domain':[('partner_id','=',record.id),'|',('type','=','out_refund'),('type','=','in_refund')],'context':{'default_partner_id':record.id}})
             return action_data
