@@ -2,7 +2,7 @@
 
 from odoo import api, fields, models
 from odoo.exceptions import UserError
-from ast import literal_eval
+import json
 
 class AccountInvoice(models.Model):
     _inherit = "account.invoice"
@@ -44,9 +44,9 @@ class AccountInvoice(models.Model):
     @api.multi
     def print_payments(self):
         for record in self:
-            dictionary = eval(record.payments_widget)
-            print dictionary
-            return dictionary
+             = json.loads(record.payments_widget)[0]
+            print json1_data
+            return json1_data
 
     @api.multi
     @api.onchange('partner_id')
