@@ -44,7 +44,7 @@ class AccountInvoice(models.Model):
     @api.multi
     def print_payments(self):
         for record in self:
-            json1_data = json.loads(record.payments_widget)[0]
+            json1_data = json.loads(record.payments_widget)
             print json1_data
             return json1_data
 
