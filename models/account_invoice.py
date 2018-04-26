@@ -2,7 +2,7 @@
 
 from odoo import api, fields, models
 from odoo.exceptions import UserError
-
+from ast import literal_eval
 
 class AccountInvoice(models.Model):
     _inherit = "account.invoice"
@@ -40,6 +40,12 @@ class AccountInvoice(models.Model):
             ('id', 'not in', purchase_ids.ids),
             ]}
         return result
+
+    @api.multi
+    def print_payments(self):
+        for record in self:
+            dictionary = literal_eval(record.payments_widget)
+            return dictionary
 
     @api.multi
     @api.onchange('partner_id')
