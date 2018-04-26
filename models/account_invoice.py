@@ -45,6 +45,7 @@ class AccountInvoice(models.Model):
     def print_payments(self):
         for record in self:
             dictionary = eval(record.payments_widget)
+            print dictionary
             return dictionary
 
     @api.multi
