@@ -26,27 +26,28 @@ class ResPartner(models.Model):
         action['domain'].append(('partner_id', 'child_of', self.ids))
         return action
 
-    def create_credit(self):
-        if self.supplier == True:
-            action = self.env.ref('sh_accounting_mod.account_action_credit_memo').read()[0]
-            salejournals = self.env['account.journal'].search([('type','=','purchase')]).ids
-            action['context'] = {
-                'default_partner_id':self.id,
-                'default_invoice_type':'in_refund',
-                'default_type':'in_refund',
-                'default_payment_term_id':False,
-                'default_journal_id': salejournals[0],
-            }
-        else:
-            action = self.env.ref('sh_accounting_mod.account_action_credit_memo').read()[0]
-            salejournals = self.env['account.journal'].search([('type','=','sale')]).ids
-            action['context'] = {
-                'default_partner_id':self.id,
-                'default_invoice_type':'out_refund',
-                'default_type':'out_refund',
-                'default_payment_term_id':False,
-                'default_journal_id': salejournals[0],
-            }
+    def create_customer_credit(self):
+        action = self.env.ref('sh_accounting_mod.account_action_credit_memo').read()[0]
+        salejournals = self.env['account.journal'].search([('type','=','sale')]).ids
+        action['context'] = {
+            'default_partner_id':self.id,
+            'default_invoice_type':'out_refund',
+            'default_type':'out_refund',
+            'default_payment_term_id':False,
+            'default_journal_id': salejournals[0],
+        }
+        return action
+
+    def create_vendor_credit(self):
+        action = self.env.ref('sh_accounting_mod.account_action_credit_memo').read()[0]
+        salejournals = self.env['account.journal'].search([('type','=','purchase')]).ids
+        action['context'] = {
+            'default_partner_id':self.id,
+            'default_invoice_type':'in_refund',
+            'default_type':'in_refund',
+            'default_payment_term_id':False,
+            'default_journal_id': salejournals[0],
+        }
         return action
 
     @api.multi
