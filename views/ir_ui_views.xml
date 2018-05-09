@@ -161,6 +161,23 @@
       <field name="view_mode">form</field>
       <field name="view_type">form</field>
     </record>
+    <record model="ir.actions.act_window" id="account_action_vendor_credit_memo">
+      <field name="auto_search" eval="True"/>
+      <field name="context">{}</field>
+      <field name="domain">[('invoice_type','in',('in_refund'))]</field>
+      <field name="filter" eval="False"/>
+      <field name="groups_id" eval="[(6, 0, [])]"/>
+      <field name="limit">80</field>
+      <field name="multi" eval="False"/>
+      <field name="name">Credit Memos</field>
+      <field name="res_model">account.invoice</field>
+      <field name="target">current</field>
+      <field name="type">ir.actions.act_window</field>
+      <field name="usage" eval="False"/>
+      <field name="view_id" ref="account.invoice_supplier"/>
+      <field name="view_mode">form</field>
+      <field name="view_type">form</field>
+    </record>
     <record model="ir.ui.view" id="register_payment_amount_only_form">
           <field name="name">x_gfp.register.payment.amount.only.form</field>
           <field name="model">account.payment</field>

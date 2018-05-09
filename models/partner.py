@@ -39,7 +39,7 @@ class ResPartner(models.Model):
         return action
 
     def create_vendor_credit(self):
-        action = self.env.ref('sh_accounting_mod.account_action_credit_memo').read()[0]
+        action = self.env.ref('sh_accounting_mod.account_action_vendor_credit_memo').read()[0]
         salejournals = self.env['account.journal'].search([('type','=','purchase')]).ids
         action['context'] = {
             'default_partner_id':self.id,
