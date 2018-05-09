@@ -41,6 +41,7 @@ class ResPartner(models.Model):
     def create_vendor_credit(self):
         action = self.env.ref('sh_accounting_mod.account_action_vendor_credit_memo').read()[0]
         salejournals = self.env['account.journal'].search([('type','=','purchase')]).ids
+        action['view_id'] = self.env.ref('account.invoice_supplier_form').id
         action['context'] = {
             'default_partner_id':self.id,
             'default_invoice_type':'in_refund',
