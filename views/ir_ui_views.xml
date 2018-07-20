@@ -130,8 +130,8 @@
       <field name="arch" type="xml">
         <xpath expr="//sheet" position="before">
           <header>
-            <button name="create_customer_credit" type="object" string="Create Customer Credit" class="btn-success"/>
-            <button name="create_vendor_credit" type="object" string="Create Vendor Credit" style="background-color:#3a8720;color:#ffffff;" class="btn-success"/>
+            <button name="create_customer_credit" type="object" string="Create Customer Credit" class="btn-success" attrs="{'invisible':[('customer','!=',True)]}"/>
+            <button name="create_vendor_credit" type="object" string="Create Vendor Credit" style="background-color:#3a8720;color:#ffffff;" class="btn-success" attrs="{'invisible':[('supplier','!=',True)]}"/>
           </header>
         </xpath>
         <xpath expr="//div[@name='button_box']" position="inside">
