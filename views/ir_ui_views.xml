@@ -75,6 +75,9 @@
             <field name="origin_purchase"/>
           </page>
         </xpath>
+        <xpath expr="//header/button" position="before">
+          <button name="action_send_bill" type="object" string="Send by Email" class="btn-info" groups="base.group_user"/>
+        </xpath>
         <xpath expr="//button[@name='%(account.action_account_invoice_refund)d']" position="attributes">
           <attribute name="invisible">1</attribute>
         </xpath>
