@@ -2,6 +2,28 @@
 <odoo>
   <data>
     <!--Adding memo to customer payment tree view-->
+    <act_window
+        id="action_account_payment_from_invoices"
+        name="Register Customer Payment"
+        res_model="account.register.payments"
+        src_model="account.invoice"
+        view_mode="form"
+        multi="True"
+        target="new"
+        context="{'default_journal_id': 10}"
+        key2="client_action_multi"
+    />
+    <act_window
+            id="action_account_payment_from_bill"
+            name="Register Bill Payment"
+            res_model="account.register.payments"
+            src_model="account.invoice"
+            view_mode="form"
+            multi="True"
+            target="new"
+            context="{'default_journal_id': 8}"
+            key2="client_action_multi"
+    />
     <record model="ir.ui.view" id="account_add_memo">
       <field name="name">x_gfp.account.payment.tree.mod</field>
       <field name="model">account.payment</field>
@@ -93,6 +115,22 @@
         <xpath expr="//button[@name='%(account.action_account_invoice_payment)d']" position="replace">
           <button name="%(account.action_account_invoice_payment)d" type="action" groups="account.group_account_user" string="Register Vendor Payment Check/Wire" class="btn-success" context="{'default_journal_id':8,'default_payment_method_id':4}" attrs="{'invisible': ['|',('state','not in',['open']),('type','=','out_refund')]}"/>
           <button name="%(account.action_account_invoice_payment)d" type="action" string="Register Vendor Payment Credit Card" style="background-color:#3a8720;color:#ffffff;" class='btn-success' context="{'default_journal_id':9}" attrs="{'invisible': ['|',('state','not in',['open']),('type','=','out_refund')]}"/>
+        </xpath>
+        <xpath expr="//notebook" position="inside">
+          <page string="Payments" attrs="{'invisible':[('payment_ids','=',False)]}">
+            <group>
+              <field readonly="1" name="payment_ids" nolabel="1" widget="one2many_list">
+                <tree>
+                  <field name="payment_date"/>
+                  <field name="journal_id"/>
+                  <field name="communication"/>
+                  <field name="name"/>
+                  <field name="check_number"/>
+                  <field name="amount"/>
+                </tree>
+              </field>
+            </group>
+          </page>
         </xpath>
       </field>
     </record>
@@ -253,6 +291,22 @@
       <field name="inherit_id" ref="account.invoice_form"/>
       <field name="priority">99</field>
       <field name="arch" type="xml">
+        <xpath expr="//notebook" position="inside">
+          <page string="Payments" attrs="{'invisible':[('payment_ids','=',False)]}">
+            <group>
+              <field readonly="1" name="payment_ids" nolabel="1" widget="one2many_list">
+                <tree>
+                  <field name="payment_date"/>
+                  <field name="journal_id"/>
+                  <field name="communication"/>
+                  <field name="name"/>
+                  <field name="check_number"/>
+                  <field name="amount"/>
+                </tree>
+              </field>
+            </group>
+          </page>
+        </xpath>
         <xpath expr="//field[@name='partner_shipping_id']" position="attributes">
           <attribute name="attrs">{'invisible':[('type','=','out_refund')]}</attribute>
         </xpath>
