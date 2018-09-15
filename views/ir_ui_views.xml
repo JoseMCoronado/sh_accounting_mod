@@ -2,28 +2,6 @@
 <odoo>
   <data>
     <!--Adding memo to customer payment tree view-->
-    <act_window
-        id="action_account_payment_from_invoices"
-        name="Register Customer Payment"
-        res_model="account.register.payments"
-        src_model="account.invoice"
-        view_mode="form"
-        multi="True"
-        target="new"
-        context="{'default_journal_id': 10}"
-        key2="client_action_multi"
-    />
-    <act_window
-            id="action_account_payment_from_bill"
-            name="Register Bill Payment"
-            res_model="account.register.payments"
-            src_model="account.invoice"
-            view_mode="form"
-            multi="True"
-            target="new"
-            context="{'default_journal_id': 8}"
-            key2="client_action_multi"
-    />
     <record model="ir.ui.view" id="account_add_memo">
       <field name="name">x_gfp.account.payment.tree.mod</field>
       <field name="model">account.payment</field>
@@ -77,11 +55,24 @@
       <field name="inherit_id" ref="account.view_account_payment_invoice_form"/>
       <field name="priority">99</field>
       <field name="arch" type="xml">
-        <xpath expr="//field[@name='communication']" position="before">
-          <field name="check_number" readonly="0"/>
+        <xpath expr="//field[@name='payment_method_id']" position="after">
+          <field name="payment_sh_type" widget="radio"/>
+          <field name="customer_check_number" attrs="{'invisible':[('payment_sh_type','!=','Check')],'required':[('payment_sh_type','=','Check')]}"/>
         </xpath>
-        <xpath expr="//field[@name='journal_id']" position="attributes">
-          <attribute name="attrs">{'readonly':[('journal_id','!=',False)]}</attribute>
+        <xpath expr="//field[@name='communication']" position="before">
+          <field name="check_number" invisible="1" readonly="0"/>
+        </xpath>
+      </field>
+    </record>
+    <record model="ir.ui.view" id="view_account_payment_from_invoices_mod">
+      <field name="name">x_gfp.view_account_payment_from_invoices.mod</field>
+      <field name="model">account.register.payments</field>
+      <field name="inherit_id" ref="account.view_account_payment_from_invoices"/>
+      <field name="priority">99</field>
+      <field name="arch" type="xml">
+        <xpath expr="//field[@name='payment_method_id']" position="after">
+          <field name="payment_sh_type" widget="radio" attrs="{'invisible':[('partner_type','=','supplier')]}"/>
+          <field name="customer_check_number" attrs="{'invisible':['|',('payment_sh_type','!=','Check'),('partner_type','=','supplier')],'required':[('payment_sh_type','=','Check'),('partner_type','!=','supplier')]}"/>
         </xpath>
       </field>
     </record>
