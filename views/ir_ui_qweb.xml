@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+  <record model="ir.actions.report.xml" id="account.account_invoices">
+    <field name="attachment_use" eval="False"/>
+  </record>
   <record model="ir.ui.view" id="report_invoice_document_mod">
       <field name="name">x_gfp.report_invoice_document.mod</field>
       <field name="type">qweb</field>
