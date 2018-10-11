@@ -56,8 +56,8 @@
       <field name="priority">99</field>
       <field name="arch" type="xml">
         <xpath expr="//field[@name='payment_method_id']" position="after">
-          <field name="payment_sh_type" widget="radio"/>
-          <field name="customer_check_number" attrs="{'invisible':[('payment_sh_type','!=','Check')],'required':[('payment_sh_type','=','Check')]}"/>
+          <field name="payment_sh_type" widget="radio" attrs="{'invisible':[('payment_type','in',['outbound','transfer'])]}"/>
+          <field name="customer_check_number" attrs="{'invisible':['|',('payment_type','in',['outbound','transfer']),('payment_sh_type','!=','Check')],'required':[('payment_sh_type','=','Check'),('payment_type','not in',['outbound','transfer'])]}"/>
         </xpath>
         <xpath expr="//field[@name='communication']" position="before">
           <field name="check_number" invisible="1" readonly="0"/>
