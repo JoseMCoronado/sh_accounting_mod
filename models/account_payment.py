@@ -104,6 +104,7 @@ class account_register_payments(models.TransientModel):
             'partner_type': self.partner_type,
             'payment_sh_type': self.payment_sh_type,
             'customer_check_number': self.customer_check_number,
+            'check_amount_in_words': self.check_amount_in_words,
         }
 
     @api.model
