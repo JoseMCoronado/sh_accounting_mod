@@ -6,3 +6,4 @@ import partner
 import account_payment
 import account_bank_statement
 import product
+import print_check
