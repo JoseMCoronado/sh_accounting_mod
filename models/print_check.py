@@ -5,7 +5,7 @@ from odoo.tools.translate import _
 
 class ExtendedSession(addons.l10n_us_check_printing.report.print_check.report_print_check):
 
-    def make_stub_line_two(self, payment, invoice):
+    def make_stub_line(self, payment, invoice):
         """ Return the dict used to display an invoice/refund in the stub
         """
         # Find the account.partial.reconcile which are common to the invoice and the payment
