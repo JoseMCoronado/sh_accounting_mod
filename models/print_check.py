@@ -2,8 +2,9 @@ from odoo import addons, models, fields, api, _
 from odoo.osv import osv
 from odoo.report import report_sxw
 from odoo.tools.translate import _
+from odoo.addons.l10n_us_check_printing.report import report_print_check
 
-class ExtendedSession(addons.l10n_us_check_printing.report.print_check.report_print_check):
+class ExtendedSession(report_print_check):
 
     def make_stub_line(self, payment, invoice):
         """ Return the dict used to display an invoice/refund in the stub
