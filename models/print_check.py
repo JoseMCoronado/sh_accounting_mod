@@ -31,5 +31,3 @@ class ExtendedSession(addons.l10n_us_check_printing.report.print_check.report_pr
             'amount_paid': invoice_sign * amount_paid,
             'currency': invoice.currency_id,
     }
-
-report.print_check.make_stub_line = make_stub_line_two
