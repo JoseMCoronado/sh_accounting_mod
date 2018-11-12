@@ -1,3 +1,4 @@
+from odoo import addons, models, fields, api, _
 from odoo.osv import osv
 from odoo.report import report_sxw
 from odoo.tools.translate import _
