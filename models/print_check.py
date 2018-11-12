@@ -1,4 +1,4 @@
-from odoo import l10n_us_check_printing
+from odoo import report
 from odoo.osv import osv
 from odoo.report import report_sxw
 from odoo.tools.translate import _
@@ -30,4 +30,4 @@ def make_stub_line_two(self, payment, invoice):
         'currency': invoice.currency_id,
     }
 
-l10n_us_check_printing.report.print_check.make_stub_line = make_stub_line_two
+report.print_check.make_stub_line = make_stub_line_two
